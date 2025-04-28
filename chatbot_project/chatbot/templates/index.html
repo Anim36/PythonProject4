@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Support Chatbot</title>
+  <title>University Help Desk</title>
   <style>
     :root {
       --bg: #e5ddd5;
@@ -106,34 +106,6 @@
       background: var(--button-hover);
     }
 
-    .typing {
-      display: inline-block;
-      margin-left: 5px;
-    }
-
-    .typing span {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      margin: 0 1px;
-      background: #999;
-      border-radius: 50%;
-      animation: blink 1.4s infinite both;
-    }
-
-    .typing span:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .typing span:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes blink {
-      0%, 80%, 100% { opacity: 0; }
-      40% { opacity: 1; }
-    }
-
     .input-box {
       display: flex;
       border-top: 1px solid #ddd;
@@ -175,7 +147,7 @@
     .chat-toggle-btn img {
       width: 28px;
       height: 28px;
-      filter: invert(1); /* make white if icon is black */
+      filter: invert(1);
     }
   </style>
 </head>
@@ -183,21 +155,17 @@
 
 <!-- Chatbot Toggle Button -->
 <div class="chat-toggle-btn" onclick="toggleChat()">
-  <img src="https://cdn-icons-png.flaticon.com/512/4712/4712103.png" alt="Chatbot Icon" />
+  <img src="https://cdn-icons-png.flaticon.com/512/2462/2462719.png" alt="Chatbot Icon" />
 </div>
 
 <!-- Chatbot Popup -->
 <div class="chatbot-popup" id="chatbot">
   <div class="chat-header">
-    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712103.png" alt="bot" />
-    Support Bot
+    <img src="https://cdn-icons-png.flaticon.com/512/2462/2462719.png" alt="bot" />
+    University Help Desk
   </div>
   <div class="chat-messages" id="messages"></div>
   <div class="question-buttons" id="buttonContainer"></div>
-  <div class="input-box">
-    <input type="text" id="userInput" placeholder="Type a message..." />
-    <button onclick="sendMessage()">Send</button>
-  </div>
 </div>
 
 <script>
@@ -211,7 +179,7 @@
   function showMessage(text, type) {
     const msgDiv = document.createElement("div");
     msgDiv.className = "msg " + type;
-    msgDiv.textContent = text;
+    msgDiv.innerHTML = text; // Use innerHTML for HTML formatted response
     document.getElementById("messages").appendChild(msgDiv);
     scrollToBottom();
   }
@@ -241,17 +209,31 @@
       });
   }
 
+  function showOnlyHiButton() {
+    const container = document.getElementById("buttonContainer");
+    container.innerHTML = '';
+
+    const btn = document.createElement("button");
+    btn.textContent = "Hi / Hello";
+    btn.onclick = () => ask("hi");
+    container.appendChild(btn);
+  }
+
   function showNextButtons(previous) {
     const container = document.getElementById("buttonContainer");
     container.innerHTML = '';
 
     const options = {
-      'hi': ['location', 'admission requirement', 'tuition fees', 'contact'],
-      'location': ['tuition fees', 'contact'],
-      'admission requirement': ['tuition fees', 'bye'],
-      'tuition fees': ['bye'],
-      'contact': ['bye'],
-      'bye': [],
+      'hi': ['Admission portal', 'Administration', 'About University', 'More', 'Contact'],
+      'admission portal': ['Admission Info'],
+      'admission info': ['Undergraduate', 'Graduate'],
+      'undergraduate': ['Tuition Fees'],
+      'graduate': ['Tuition Fees '],
+      'student portal': [],
+      'administration': [],
+      'about university': ['Official Website'],
+      'more': ['Clubs', 'Events'],
+      'contact': ['UAP Administration', 'Admission Office', 'Dept. CSE'],
     };
 
     const next = options[previous.toLowerCase()] || [];
@@ -263,6 +245,18 @@
       container.appendChild(btn);
     });
 
+    // 🏠 Home button (without clearing chat)
+    const homeBtn = document.createElement("button");
+homeBtn.textContent = "🏠 Home";
+homeBtn.onclick = () => {
+  questionHistory = []; // clear history
+  clearButtons();
+  showNextButtons('hi'); // direct show 4 options (Admission portal etc.)
+};
+container.appendChild(homeBtn);
+
+
+    // ⬅️ Back button
     if (questionHistory.length > 1) {
       const backBtn = document.createElement("button");
       backBtn.textContent = "⬅️ Back";
@@ -272,9 +266,10 @@
   }
 
   function goBack() {
-    questionHistory.pop(); // current
-    const prev = questionHistory.pop(); // previous
+    questionHistory.pop(); // Remove current
+    const prev = questionHistory.pop(); // Previous
     if (prev) ask(prev);
+    else showOnlyHiButton();
   }
 
   function sendMessage() {
@@ -293,8 +288,7 @@
 
   window.onload = () => {
     document.getElementById("chatbot").style.display = "none"; // hide by default
-    showMessage("Hi! How can I assist you today?", "bot");
-    showNextButtons("hi");
+    showOnlyHiButton();
   }
 </script>
 
