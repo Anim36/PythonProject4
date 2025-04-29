@@ -36,7 +36,7 @@ Admission with the approval of the Head of Dept.""",
         "official website": """Visit our Official Website: <a href="https://uap-bd.edu/index.php" target="_blank">Click Here</a>""",
     }
 
-    reply = responses.get(user_message, "Sorry, I didn't understand that.")
+    reply = responses.get(user_message, """Sorry, I didn't understand that.Visit our Official Website: <a href="https://uap-bd.edu/index.php" target="_blank">Click Here</a>""")
     return JsonResponse({"response": reply})
 from django.shortcuts import render
 

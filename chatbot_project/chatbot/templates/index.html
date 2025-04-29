@@ -166,6 +166,12 @@
   </div>
   <div class="chat-messages" id="messages"></div>
   <div class="question-buttons" id="buttonContainer"></div>
+
+  <!-- ✅ User Input Box restored -->
+  <div class="input-box">
+    <input type="text" id="userInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
 </div>
 
 <script>
@@ -179,7 +185,7 @@
   function showMessage(text, type) {
     const msgDiv = document.createElement("div");
     msgDiv.className = "msg " + type;
-    msgDiv.innerHTML = text; // Use innerHTML for HTML formatted response
+    msgDiv.innerHTML = text;
     document.getElementById("messages").appendChild(msgDiv);
     scrollToBottom();
   }
@@ -228,7 +234,7 @@
       'admission portal': ['Admission Info'],
       'admission info': ['Undergraduate', 'Graduate'],
       'undergraduate': ['Tuition Fees'],
-      'graduate': ['Tuition Fees '],
+      'graduate': ['Tuition Fees'],
       'student portal': [],
       'administration': [],
       'about university': ['Official Website'],
@@ -245,16 +251,15 @@
       container.appendChild(btn);
     });
 
-    // 🏠 Home button (without clearing chat)
+    // 🏠 Home button
     const homeBtn = document.createElement("button");
-homeBtn.textContent = "🏠 Home";
-homeBtn.onclick = () => {
-  questionHistory = []; // clear history
-  clearButtons();
-  showNextButtons('hi'); // direct show 4 options (Admission portal etc.)
-};
-container.appendChild(homeBtn);
-
+    homeBtn.textContent = "🏠 Home";
+    homeBtn.onclick = () => {
+      questionHistory = [];
+      clearButtons();
+      showNextButtons('hi');
+    };
+    container.appendChild(homeBtn);
 
     // ⬅️ Back button
     if (questionHistory.length > 1) {
@@ -266,8 +271,8 @@ container.appendChild(homeBtn);
   }
 
   function goBack() {
-    questionHistory.pop(); // Remove current
-    const prev = questionHistory.pop(); // Previous
+    questionHistory.pop();
+    const prev = questionHistory.pop();
     if (prev) ask(prev);
     else showOnlyHiButton();
   }
